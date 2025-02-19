@@ -1,7 +1,8 @@
 import os, sys
+import datetime
 from PIL import Image
 from pillow_heif import register_heif_opener
-from PIL.ExifTags import TAGS
+from PIL import ExifTags
 from pprint import pprint
 
 # need to call to be able to rexognize HEIC files
@@ -15,14 +16,10 @@ imagename = "/home/rick/Pictures/album/20220821_103843.jpg"
 image = Image.open(imagename)
 
 # extract EXIF data
-exifdata = image.getexif()
-
-# iterating over all EXIF data fields
-# for tag_id in exifdata:
-#     # get the tag name, instead of human unreadable tag id
-#     tag = TAGS.get(tag_id, tag_id)
-#     data = exifdata.get(tag_id)
-pprint(TAGS.get('DateTimeOriginal'))
-pprint(exifdata.get(TAGS.get('DateTimeOriginal')))  
+exif = image.getexif()
+exifdata = exif._get_merged_dict()
+timestamp = exifdata[ExifTags.Base.DateTimeOriginal]
+orig_create_time = datetime.datetime.fromtimestamp(timestamp)
+print(int(object=orig_create_time)) 
 
 image.close()
