@@ -25,9 +25,10 @@ for file in os.listdir(unsorted_dir):
         # get the creation date/time from exif data
         original_create_datetime = exifdata.get(306)
 
-        # copy file to sorted dir based on exif date
+        # TODO copy file to sorted dir based on exif date
         print(f"Renaming {filename} to {original_create_datetime}")
     # handle videos
     elif filename.lower().endswith(".mp4") or filename.lower().endswith(".mov"):
         print(filename)
+        # TODO get right info from ffmpeg probe
         #pprint(ffmpeg.probe("IMG_0111.MOV")["streams"])
