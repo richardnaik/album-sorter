@@ -1,1 +1,1 @@
-Sorting script for personal photo/video albums
+Script for sorting and renaming personal photo/video albums
