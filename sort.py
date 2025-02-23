@@ -1,32 +1,42 @@
-import os, sys
+import os
+import shutil
+from pprint import pprint
 from PIL import Image
 from pillow_heif import register_heif_opener
 from PIL.ExifTags import TAGS
 import ffmpeg
-from pprint import pprint
 
-# need to call to be able to rexognize HEIC files
+# need to call to be able to recognize HEIC files
 register_heif_opener()
 
-# dir with unsorted media
-unsorted_dirname = "C:/Users/richa/code/unsorted-media"
+# directory with unsorted media
+unsorted_dirname = "/home/rick/code/unsorted-media"
 unsorted_dir = os.fsencode(unsorted_dirname)
 
-# loop through directory
-for file in os.listdir(unsorted_dir):
-    filename = os.fsdecode(file)
-    # handle images
-    if filename.lower().endswith(".jpg") or filename.lower().endswith(".heic") or filename.lower().endswith(".png"): 
-        image = Image.open(unsorted_dirname + '/' + filename)
+# directory for sorted media
+sorted_dirname = "/home/rick/code/sorted-media"
 
-        # extract EXIF data
+# loop through directory
+for file in os.scandir(unsorted_dir):
+    full_filename = os.fsdecode(file)
+    filename, extension = os.path.splitext(full_filename)
+
+    # handle images
+    if extension.lower() == ".jpg" or extension.lower() == ".heic" or extension.lower() == ".png": 
+        image = Image.open(full_filename)
+        #print(image.format)
+
+        # extract exif data
         exifdata = image.getexif()
 
+        # TODO handle files with no exif date or no extension
         # get the creation date/time from exif data
         original_create_datetime = exifdata.get(306)
 
-        # TODO copy file to sorted dir based on exif date
-        print(f"Renaming {filename} to {original_create_datetime}")
+        # copy file to sorted dir with new name based on exif date
+        print(f"Renaming {full_filename} to {original_create_datetime}{extension}")
+        shutil.copyfile(full_filename, sorted_dirname + '/' + original_create_datetime + extension)
+
     # handle videos
     elif filename.lower().endswith(".mp4") or filename.lower().endswith(".mov"):
         print(filename)
