@@ -2,5 +2,5 @@
 *.HEIC
 *.mp4
 *.mov
-debug
+*debug
 config.cfg

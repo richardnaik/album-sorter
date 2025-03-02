@@ -1,12 +1,16 @@
+# base libraries
 import os
 from shutil import copyfile
 import configparser
+import json
+
+# image and video libraries
 from pprint import pprint
 from PIL import Image
 from PIL import UnidentifiedImageError
 from pillow_heif import register_heif_opener
 from PIL.ExifTags import TAGS
-import ffmpeg
+from ffmpeg import FFmpeg, FFmpegError
 
 # need to call this to be able to recognize HEIC files
 register_heif_opener()
@@ -28,7 +32,6 @@ for file in os.scandir(unsorted_dir):
 
     try:
         image = Image.open(full_filename)
-        # print(image.format)
     except UnidentifiedImageError as e: # if it's not image, try to open it as a video
         video = full_filename
 
@@ -55,6 +58,14 @@ for file in os.scandir(unsorted_dir):
     # handle videos
     elif video is not None:
         print(video)
-        # TODO get right info from ffmpeg probe
-        #pprint(ffmpeg.probe(video)["streams"])
-        video = None
+        
+        ffprobe = FFmpeg(executable="ffprobe").input(video, print_format="json", show_streams=None)
+        
+        try:
+            media = json.loads(ffprobe.execute())
+            print(media['streams'][0]['tags']['creation_time'])
+            video = None
+        except FFmpegError as e:
+            print(e.message)
+    else: 
+        print(f"{full_filename} is an unknown file type")
