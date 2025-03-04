@@ -45,25 +45,46 @@ for file in os.scandir(unsorted_dir):
 
         # make sure exif actually has a date/time
         if original_create_datetime is not None:
-            # new filename based on original creation date/time
-            new_filename = sorted_dirname + "/" + original_create_datetime + "." + image.format
 
-            # copy file to sorted dir
+            # keep the HEIC extension, probably not necessary but it's consistent
+            if image.format == 'HEIF':
+                extension = 'HEIC'
+            else:
+                extension = image.format
+
+
+            # new filename based on original creation date/time
+            new_filename = sorted_dirname + '/' + original_create_datetime + '.' + extension
+
+            # copy renamed file to sorted dir
             print(f"Renaming {full_filename} to {new_filename}")
             copyfile(full_filename, new_filename)
 
             # reset the image variable
             image = None
+        else:
+            print(f"{full_filename} does not have a creation date/time in its exif data")
 
     # handle videos
     elif video is not None:
-        print(video)
-        
+        # get the file extension so we can use it for the new file
+        filename, extension = os.path.splitext(video)
         ffprobe = FFmpeg(executable="ffprobe").input(video, print_format="json", show_streams=None)
         
         try:
             media = json.loads(ffprobe.execute())
-            print(media['streams'][0]['tags']['creation_time'])
+
+            # different video formats have different streams at the 0 index but they should all have the creation time
+            original_create_datetime = media['streams'][0]['tags']['creation_time']
+
+            # new filename based on original creation date/time
+            new_filename = sorted_dirname + '/' + original_create_datetime + extension
+
+            # copy renamed file to sorted dir
+            print(f"Renaming {video} to {new_filename}")
+            copyfile(full_filename, new_filename)
+            
+            # reset video variable
             video = None
         except FFmpegError as e:
             print(e.message)
