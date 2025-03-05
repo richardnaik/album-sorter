@@ -5,7 +5,6 @@ import configparser
 import json
 
 # image and video libraries
-from pprint import pprint
 from PIL import Image
 from PIL import UnidentifiedImageError
 from pillow_heif import register_heif_opener
@@ -29,6 +28,11 @@ sorted_dirname = config.get('directories', 'sorted')
 for file in os.scandir(unsorted_dir):
     full_filename = os.fsdecode(file)
     filename, extension = os.path.splitext(full_filename)
+
+    # initialize these vars as None so the loop knows what to do
+    # TODO - shouldn't need to do this
+    image = None
+    video = None
 
     try:
         image = Image.open(full_filename)

@@ -8,7 +8,3 @@ RUN python3.11 -m ensurepip --upgrade
 RUN mkdir /app
 RUN mkdir /unsorted
 RUN mkdir /sorted
-
-# get the required python libs, reqs file needs to be in the same directory you're building from
-COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install -r /tmp/requirements.txt
