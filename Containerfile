@@ -1,8 +1,7 @@
-FROM registry.access.redhat.com/ubi9/ubi
+FROM ubuntu:24.04
 
-# use python 3.11 for consistency
-RUN dnf -y install python3.11
-RUN python3.11 -m ensurepip --upgrade
+RUN apt-get -y update
+RUN apt-get -y install python3 python3-pip ffmpeg
 
 # make directories for mounts, not necessary but cleaner
 RUN mkdir /app

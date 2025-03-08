@@ -1,7 +1,6 @@
 # base libraries
 import os
 from shutil import copyfile
-import configparser
 import json
 
 # image and video libraries
@@ -14,15 +13,8 @@ from ffmpeg import FFmpeg, FFmpegError
 # need to call this to be able to recognize HEIC files
 register_heif_opener()
 
-config = configparser.RawConfigParser() 
-config.read_file(open(r"./config.cfg")) 
-
-# directory with unsorted media
-unsorted_dirname = config.get('directories', 'unsorted')
-unsorted_dir = os.fsencode(unsorted_dirname)
-
-# directory for sorted media
-sorted_dirname = config.get('directories', 'sorted')
+unsorted_dir = '/unsorted'
+sorted_dir = '/sorted'
 
 # loop through directory
 for file in os.scandir(unsorted_dir):
@@ -58,7 +50,7 @@ for file in os.scandir(unsorted_dir):
 
 
             # new filename based on original creation date/time
-            new_filename = sorted_dirname + '/' + original_create_datetime + '.' + extension
+            new_filename = sorted_dir + '/' + original_create_datetime + '.' + extension
 
             # copy renamed file to sorted dir
             print(f"Renaming {full_filename} to {new_filename}")
@@ -82,7 +74,7 @@ for file in os.scandir(unsorted_dir):
             original_create_datetime = media['streams'][0]['tags']['creation_time']
 
             # new filename based on original creation date/time
-            new_filename = sorted_dirname + '/' + original_create_datetime + extension
+            new_filename = sorted_dir + '/' + original_create_datetime + extension
 
             # copy renamed file to sorted dir
             print(f"Renaming {video} to {new_filename}")
