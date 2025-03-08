@@ -26,9 +26,10 @@ for file in os.scandir(unsorted_dir):
     image = None
     video = None
 
+    # TODO - make this cleaner
     try:
         image = Image.open(full_filename)
-    except UnidentifiedImageError as e: # if it's not image, try to open it as a video
+    except UnidentifiedImageError as e: # if it's not an image, try to open it as a video
         video = full_filename
 
     # handle images
