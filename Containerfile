@@ -1,7 +1,9 @@
-FROM ubuntu:24.04
+FROM alpine
 
-RUN apt-get -y update
-RUN apt-get -y install python3 python3-pip ffmpeg
+# install python, pip, and ffmpeg
+RUN apk add --update --no-cache python3
+RUN apk add --update --no-cache py3-pip
+RUN apk add --update --no-cache ffmpeg
 
 # make directories for mounts, not necessary but cleaner
 RUN mkdir /app
