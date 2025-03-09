@@ -1,3 +1,0 @@
-pillow
-pillow_heif
-python-ffmpeg
