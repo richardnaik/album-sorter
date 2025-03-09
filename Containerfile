@@ -19,3 +19,5 @@ RUN pip3 install python-ffmpeg --break-system-packages
 RUN mkdir /app
 RUN mkdir /unsorted
 RUN mkdir /sorted
+
+COPY ./sort.py /app/sort.py
