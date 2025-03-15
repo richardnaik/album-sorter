@@ -13,11 +13,8 @@ from ffmpeg import FFmpeg, FFmpegError
 # need to call this to be able to recognize HEIC files
 register_heif_opener()
 
-# unsorted_dir = '/unsorted'
-# sorted_dir = '/sorted'
-
-unsorted_dir = '/home/rick/code/unsorted-media'
-sorted_dir = '/home/rick/code/sorted-media'
+unsorted_dir = '/unsorted'
+sorted_dir = '/sorted'
 
 # loop through directory
 for file in os.scandir(unsorted_dir):
