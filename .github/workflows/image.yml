@@ -12,6 +12,9 @@ jobs:
   push-ghcr:
     name: Build and push image
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
 
     steps:
      - name: Login to GitHub Container Registry
