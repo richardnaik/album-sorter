@@ -12,10 +12,6 @@ jobs:
   push-ghcr:
     name: Build and push image
     runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
-      matrix:
-        install_latest: [ true, false ]
 
     steps:
      - name: Login to GitHub Container Registry
@@ -25,9 +21,9 @@ jobs:
          username: ${{ github.repository_owner }}
          password: ${{ secrets.GITHUB_TOKEN }}
      - name: Build and push image
-       uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+       uses: docker/build-push-action@v6
        with:
         file: ./Containerfile
-        platforms: ${{ matrix.platforms }}
         push: true
+        tags: ghcr.io/richardnaik/album-sorter:latest
         outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=album-sorter
