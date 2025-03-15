@@ -13,8 +13,11 @@ from ffmpeg import FFmpeg, FFmpegError
 # need to call this to be able to recognize HEIC files
 register_heif_opener()
 
-unsorted_dir = '/unsorted'
-sorted_dir = '/sorted'
+# unsorted_dir = '/unsorted'
+# sorted_dir = '/sorted'
+
+unsorted_dir = '/home/rick/code/unsorted-media'
+sorted_dir = '/home/rick/code/sorted-media'
 
 # loop through directory
 for file in os.scandir(unsorted_dir):
@@ -29,7 +32,7 @@ for file in os.scandir(unsorted_dir):
     # TODO - make this cleaner
     try:
         image = Image.open(full_filename)
-    except UnidentifiedImageError as e: # if it's not an image, try to open it as a video
+    except UnidentifiedImageError as e: # if it's not an image, assume it's as a video
         video = full_filename
 
     # handle images
@@ -53,9 +56,13 @@ for file in os.scandir(unsorted_dir):
             # new filename based on original creation date/time
             new_filename = sorted_dir + '/' + original_create_datetime + '.' + extension
 
-            # copy renamed file to sorted dir
-            print(f"Renaming {full_filename} to {new_filename}")
-            copyfile(full_filename, new_filename)
+            # copy renamed file to sorted dir if it isn't there
+            if not os.path.isfile(new_filename):
+                print(f"Renaming {full_filename} to {new_filename}")
+                copyfile(full_filename, new_filename)
+            else:
+                print(f"Image {new_filename} already exists")
+            
 
             # reset the image variable
             image = None
@@ -77,9 +84,12 @@ for file in os.scandir(unsorted_dir):
             # new filename based on original creation date/time
             new_filename = sorted_dir + '/' + original_create_datetime + extension
 
-            # copy renamed file to sorted dir
-            print(f"Renaming {video} to {new_filename}")
-            copyfile(full_filename, new_filename)
+            # copy renamed file to sorted dir if it isn't there
+            if not os.path.isfile(new_filename):
+                print(f"Renaming {video} to {new_filename}")
+                copyfile(full_filename, new_filename)
+            else:
+                print(f"Video {new_filename} already exists")
             
             # reset video variable
             video = None
