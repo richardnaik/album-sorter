@@ -10,4 +10,3 @@ Command for a local podman container, assuming the image has been built and name
 * handle directories, right now it will crash if there is a directory within the unsorted directory
 * figure out what to do if the creation date/time doesn't exist in metadata
 * make filename format a little cleaner, so things like `00000Z` aren't in there
-* auto build container image with github actions or something else
