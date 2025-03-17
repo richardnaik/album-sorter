@@ -13,20 +13,22 @@ from ffmpeg import FFmpeg, FFmpegError
 # need to call this to be able to recognize HEIC files
 register_heif_opener()
 
+# if you're running locally change these to the respective locations of your sorted and unsorted media
 unsorted_dir = '/unsorted'
 sorted_dir = '/sorted'
 
-# loop through directory
+# loop through unsorted directory
 for file in os.scandir(unsorted_dir):
     full_filename = os.fsdecode(file)
     filename, extension = os.path.splitext(full_filename)
 
-    # initialize these vars as None so the loop knows what to do
+    # initialize these vars as None so the if statement can handle them
     # TODO - shouldn't need to do this
     image = None
     video = None
 
-    # TODO - make this cleaner
+    # try to open the file as an image, if it fails treat it like a video
+    # TODO - fix this logic, since it will treat any non image as a video
     try:
         image = Image.open(full_filename)
     except UnidentifiedImageError as e: # if it's not an image, assume it's as a video
@@ -37,7 +39,7 @@ for file in os.scandir(unsorted_dir):
         # extract exif data
         exifdata = image.getexif()
 
-        # get the creation date/time from exif data
+        # get the creation date/time from exif data, 306 is always the id
         original_create_datetime = exifdata.get(306)
 
         # make sure exif actually has a date/time
@@ -49,7 +51,6 @@ for file in os.scandir(unsorted_dir):
             else:
                 extension = image.format
 
-
             # new filename based on original creation date/time
             new_filename = sorted_dir + '/' + original_create_datetime + '.' + extension
 
@@ -60,7 +61,6 @@ for file in os.scandir(unsorted_dir):
             else:
                 print(f"Image {new_filename} already exists")
             
-
             # reset the image variable
             image = None
         else:
@@ -68,6 +68,7 @@ for file in os.scandir(unsorted_dir):
 
     # handle videos
     elif video is not None:
+        
         # get the file extension so we can use it for the new file
         filename, extension = os.path.splitext(video)
         ffprobe = FFmpeg(executable="ffprobe").input(video, print_format="json", show_streams=None)
