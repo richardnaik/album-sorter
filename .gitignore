@@ -4,3 +4,5 @@
 *.mov
 *debug
 config.cfg
+venv*
+token.json
